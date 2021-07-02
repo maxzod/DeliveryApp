@@ -1,0 +1,20 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
+{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{% set sumratings = 0 %}
+{% for item in field.value %}
+    {% set sumratings = sumratings + item.stars %}
+{% endfor %}
+{% set average = sumratings / (field.value|length == 0 ? 1 : field.value|length) %}
+<a class="text-warning" data-toggle="tooltip" data-placement="bottom" title="{{ average|round(1, 'floor') }}">
+{% if average > 0 %}
+    {% for i in 1..average|round %}
+        <span class="fa fa-star checked"></span>
+    {% endfor %}
+{% endif %}
+</a>
+<script>
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>

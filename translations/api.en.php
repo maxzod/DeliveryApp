@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'role_not_found' => 'Role not found',
+    'email_taken' => 'Email already taken',
+    'image_not_found' => 'Image not found',
+    'empty_fields' => 'Please fill all the fields',
+    'phone_taken' => 'Phone already taken',
+    'wrong_code' => 'Wrong code',
+    'no_user_for_phone' => 'Cannot find a user with this phone',
+    'code_sent' => 'Code has been sent',
+    'not_found' => 'Not Found',
+    'un_auth' => 'Un authenticated',
+    'access_denied' => 'Access denied',
+    'invalid_type' => 'Invalid type',
+    'order_in_process_err' => 'order already in processing',
+    'order_reach_max_offers' => 'order has reached to the max number of offers',
+    'pay_fees_err' => 'You cannot add more offers before paying the fees',
+    'order_client_noti_title' => 'There is a new Offers on your order',
+    'order_client_noti_body' => 'check the offers list on your order',
+    'arrive_noti_title' => 'I`ve arrived',
+    'arrive_noti_body' => 'I`ve arrived and waiting for you to take your order',
+    'offer_accepted_noti_title' => 'Offer accepted',
+    'offer_accepted_noti_body' => 'Your offer has been accepted go check the orders list',
+    'success' => 'success',
+    'new_orders_noti_title' => 'There`s new orders',
+    'new_orders_noti_body' => 'Check the orders list',
+];

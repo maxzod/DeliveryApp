@@ -1,0 +1,25 @@
+<table class="table table-responsive">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">السعر</th>
+        <th scope="col">صورة الفاتورة</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for bill in field.value %}
+    <tr>
+        <th scope="row">{{ bill.id }}</th>
+        <td>{{ bill.price }}</td>
+        <td>
+            <a href="#" class="ea-lightbox-thumbnail" data-featherlight="#{{ bill.getImage().id }}" data-featherlight-close-on-click="anywhere">
+                <img src="{{ asset('/uploads/' ~ bill.getImage().filePath) }}" class="img-fluid">
+            </a>
+            <div id="{{ bill.getImage().id }}" class="ea-lightbox">
+                <img src="{{ asset('/uploads/' ~ bill.getImage().filePath) }}" />
+            </div> 
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HubController!{% endblock %}
+
+{% block body %}
+    <h1>Hub Index</h1>
+    <script>
+        const url = 'http://localhost:8001/.well-known/mercure?topic=' + encodeURIComponent('http://localhost:8000/api/conversations/1/messages');
+        const eventSource = new EventSource(url, {
+            headers: {
+                'mercureAuthoirzation': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MjEwNTQxNTMuNDUzNjE1LCJtZXJjdXJlIjp7InB1Ymxpc2giOltdLCJzdWJzY3JpYmUiOlsiaHR0cDovL2V4YW1wbGUuY29tL2FwaS9jb252ZXJzYXRpb25zLzEvbWVzc2FnZXMiXX19.PIOQbfl1K3_y83XQUYsEtMtkgLdMjpblxl4spRbQc54'
+            }
+        });
+        eventSource.onmessage = event => {
+            // Will be called every time an update is published by the server
+            console.log(JSON.parse(event.data));
+        }
+    </script>
+{% endblock %}
