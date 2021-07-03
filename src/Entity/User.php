@@ -220,7 +220,7 @@ class User implements UserInterface
     private $permissions = [];
 
 
-    private function __construct()
+    public function __construct()
     {
         $this->complaints = new ArrayCollection();
         $this->orders = new ArrayCollection();

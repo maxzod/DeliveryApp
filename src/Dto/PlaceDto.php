@@ -11,17 +11,17 @@ class PlaceDto
     /**
      * @Assert\NotBlank(allowNull=false)
      */
-    public string $name;
+    public ?string $name;
     /**
      * @Assert\NotBlank(allowNull=false)
      */
-    public string $longitude;
+    public ?string $longitude;
     /**
      * @Assert\NotBlank(allowNull=false)
      */
-    public string $latitude;
+    public ?string $latitude;
     /**
      * @Assert\NotBlank(allowNull=false)
      */
-    public string $address;
+    public ?string $address;
 }

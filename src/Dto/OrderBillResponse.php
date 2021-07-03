@@ -6,7 +6,7 @@ namespace App\Dto;
 
 class OrderBillResponse
 {
-    public int $id;
-    public float $price;
-    public ImageResponse $image;
+    public ?int $id;
+    public ?float $price;
+    public ?ImageResponse $image;
 }

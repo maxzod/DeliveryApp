@@ -167,10 +167,13 @@ class AuthController extends AbstractController
         try {
             $user = $qb->where(
                 $qb->expr()->andX(
-                    $qb->expr()->eq('u.phone', $request->phone),
-                    $qb->expr()->eq('u.code', $request->code)
+                    $qb->expr()->eq('u.phone', ':phone'),
+                    $qb->expr()->eq('u.code', ':code')
                 )
-            )->getQuery()->getSingleResult();
+            )
+                ->setParameter('phone', $request->phone)
+                ->setParameter('code', $request->code)
+                ->getQuery()->getSingleResult();
         } catch (NoResultException $e) {
             return new JsonResponse(['error' => $this->translator->trans('wrong_code', [], 'api')], 422);
         }

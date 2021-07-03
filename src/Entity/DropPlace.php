@@ -21,7 +21,7 @@ class DropPlace extends Place
     {
         $place = new self();
         $place->setName($name);
-        $place->setLongtude($longitude);
+        $place->setLongitude($longitude);
         $place->setLatitude($latitude);
         $place->setAddress($address);
         return $place;

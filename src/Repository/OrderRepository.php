@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Order;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -20,69 +21,65 @@ class OrderRepository extends ServiceEntityRepository
         parent::__construct($registry, Order::class);
     }
 
-    public function getDriverOrders(UserInterface $user, int $page = 1, int $status = null): array|int|string
+    public function getDriverOrders(UserInterface $user, ?int $page = 1, ?int $status = Order::STATUS_PROCESSING): array|int|string
     {
-        $qb = $this->createQueryBuilder('o')
-            ->where("o.driver = :user");
-        if ($status != null) {
-            $qb = $qb->andWhere("o.status = :status")
-                ->setParameter("status", $status);
-        }
+        $qb = $this->createQueryBuilder('o');
         return $qb
-            ->join("o.owner", "owner")
-            ->join("owner.image", "image")
-            ->join("o.products", "products")
-            ->join("o.place", "place")
-            ->join("o.dropPlace", "drop_place")
-            ->join('o.conversation', 'conversation')
+            ->leftJoin("o.owner", "owner")
+            ->leftJoin("o.products", "products")
+            ->leftJoin("o.place", "place")
+            ->leftJoin("o.dropPlace", "drop_place")
+            ->leftJoin('o.conversation', 'conversation')
+            ->where($qb->expr()->andX(
+                $qb->expr()->eq('o.driver', ':user'),
+                $qb->expr()->eq('o.status', ':status')
+            ))
             ->setParameter("user", $user)
-            ->select("o, owner, products, place, drop_place, image, conversation.id as conversation_id")
+            ->setParameter("status", $status)
             ->setFirstResult(($page - 1) * 15)
             ->setMaxResults($page * 15)
             ->getQuery()
-            ->getArrayResult();
+            ->getResult();
     }
 
-    public function getClientOrders(int $userId, int $page, int $status = Order::STATUS_WAITING)
+    public function getClientOrders(User $user, ?int $page = 1, ?int $status = 1)
     {
-        $qb = $this->createQueryBuilder('o')
-            ->where("o.owner.id = :user");
-        if ($status != null) {
-            $qb = $qb->andWhere("o.status = :status")
-                ->setParameter("status", $status);
-        }
+        $qb = $this->createQueryBuilder('o');
+
         return $qb
-            ->join("o.owner", "owner")
-            ->join("owner.image", "image")
-            ->join("o.products", "products")
-            ->join("o.place", "place")
-            ->join("o.dropPlace", "drop_place")
-            ->join('o.conversation', 'conversation')
-            ->setParameter("user", $userId)
-            ->select("o, owner, products, place, drop_place, image, conversation.id as conversation_id")
+            ->leftJoin("o.owner", "owner")
+            ->leftJoin("o.products", "products")
+            ->leftJoin("o.place", "place")
+            ->leftJoin("o.dropPlace", "drop_place")
+            ->leftJoin('o.conversation', 'conversation')
+            ->where($qb->expr()->andX(
+                $qb->expr()->eq('o.owner', ':user'),
+                $qb->expr()->eq('o.status', ':status')
+            ))
+            ->setParameter('user', $user)
+            ->setParameter('status', $status)
             ->setFirstResult(($page - 1) * 15)
             ->setMaxResults($page * 15)
             ->getQuery()
-            ->getArrayResult();
+            ->getResult();
     }
 
-    public function getAvailableOrders(int $page)
+    public function getAvailableOrders(?int $page = 1)
     {
         return $this->createQueryBuilder('o')
             ->where("o.status = :status")
             ->andWhere("COUNT(o.offers) < 6")
-            ->join("o.owner", "owner")
-            ->join("owner.image", "image")
-            ->join("o.products", "products")
-            ->join("o.place", "place")
-            ->join("o.dropPlace", "drop_place")
-            ->join('o.conversation', 'conversation')
+            ->leftJoin("o.owner", "owner")
+            ->leftJoin("owner.image", "image")
+            ->leftJoin("o.products", "products")
+            ->leftJoin("o.place", "place")
+            ->leftJoin("o.dropPlace", "drop_place")
+            ->leftJoin('o.conversation', 'conversation')
             ->setParameter("status", Order::STATUS_WAITING)
-            ->select("o, owner, products, place, drop_place, image, conversation.id as conversation_id")
             ->setFirstResult(($page - 1) * 15)
             ->setMaxResults($page * 15)
             ->getQuery()
-            ->getArrayResult();
+            ->getResult();
     }
     // /**
     //  * @return Order[] Returns an array of Order objects

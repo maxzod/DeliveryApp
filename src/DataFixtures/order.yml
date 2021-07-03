@@ -1,0 +1,28 @@
+App\Entity\Order:
+  order:
+    note: <sentence()>
+    owner: "@client"
+    place: "@place_data"
+    drop_place: "@dplace_data"
+    products:
+      - "@product_data"
+    status: 1
+
+App\Entity\OrderPlace:
+  place_data:
+    name: <word()>
+    address: <sentence()>
+    longitude: <longitude()>
+    latitude: <latitude()>
+
+App\Entity\DropPlace:
+  dplace_data:
+    name: <word()>
+    address: <sentence()>
+    longitude: <longitude()>
+    latitude: <latitude()>
+
+App\Entity\Product:
+  product_data:
+    name: <word()>
+    quantity: <numberBetween(1,10)>

@@ -4,9 +4,6 @@ namespace App\Controller;
 
 use ApiPlatform\Core\Exception\ResourceClassNotSupportedException;
 use ApiPlatform\Core\Validator\ValidatorInterface;
-use App\DataProvider\ClientOrderCollectionDataProvider;
-use App\DataProvider\DriverOrderCollectionDataProvider;
-use App\DataProvider\OrderOffersCollectionDataProvider;
 use App\Dto\OrderBillRequest;
 use App\Dto\OrderRequest;
 use App\Dto\OrderResponse;
@@ -16,11 +13,11 @@ use App\Entity\Coupon;
 use App\Entity\DropPlace;
 use App\Entity\Offer;
 use App\Entity\OrderPlace;
-use App\Entity\Place;
 use App\Entity\Product;
 use App\Entity\User;
 use App\Messages\Notification;
 use App\Repository\OrderRepository;
+use App\Transformers\OrderTransformer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,20 +25,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Order;
-use App\Entity\OrderBill;
 use App\Repository\MediaObjectRepository;
 use DateTime;
-use DateTimeImmutable;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use function Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
-use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security as SSecurity;
 
 class OrdersController extends AbstractController
 {
@@ -62,6 +52,7 @@ class OrdersController extends AbstractController
     private MediaObjectRepository $mediaObjectRepository;
     private ValidatorInterface $validator;
     private OrderRepository $orderRepository;
+    private OrderTransformer $orderTransformer;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -71,7 +62,8 @@ class OrdersController extends AbstractController
         TranslatorInterface $translator,
         MediaObjectRepository $mediaObjectRepository,
         OrderRepository $orderRepository,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        OrderTransformer $orderTransformer
     ) {
         $this->entityManager = $entityManager;
         $this->security = $security;
@@ -81,11 +73,12 @@ class OrdersController extends AbstractController
         $this->mediaObjectRepository = $mediaObjectRepository;
         $this->validator = $validator;
         $this->orderRepository = $orderRepository;
+        $this->orderTransformer = $orderTransformer;
     }
 
     /**
      * @Route(name="orders.index", path="/api/orders", methods={"GET"})
-     * @Security("(is_granted('ROLE_CLIENT') or is_granted('ROLE_CLIENT')) and user.getAccountStatus() == 1")
+     * @SSecurity("(is_granted('ROLE_CLIENT') or is_granted('ROLE_CLIENT')) and user.getAccountStatus() == 1")
      */
     public function index(Request $request)
     {
@@ -95,16 +88,16 @@ class OrdersController extends AbstractController
         $user = $this->security->getUser();
         if(in_array("ROLE_CLIENT", $user->getRoles()))
         {
-            $orders = $this->orderRepository->getClientOrders($user->getId(), $request->query->getInt('page'), $request->query->getInt('status'));
+            $orders = $this->orderRepository->getClientOrders($user, $request->query->getInt('page', 1), $request->query->getInt('status', 1));
         }else{
-            $orders = $this->orderRepository->getAvailableOrders($request->query->getInt('page'));
+            $orders = $this->orderRepository->getAvailableOrders($request->query->getInt('page', 1));
         }
-        $response = $this->serializer->deserialize($orders, 'array', OrderResponse::class);
-        return JsonResponse::fromJsonString(json_encode($response));
+        $data = $this->orderTransformer->transform($orders);
+        return new JsonResponse($this->serializer->serialize($data, 'json'), 200, [], false);
     }
     /**
      * @Route(name="orders.store", path="/api/orders",methods={"POST"})
-     * @Security("is_granted('ROLE_CLIENT') and user.getAccountStatus() == 1")
+     * @SSecurity("is_granted('ROLE_CLIENT') and user.getAccountStatus() == 1")
      */
     public function store(OrderRequest $request)
     {
@@ -158,13 +151,10 @@ class OrdersController extends AbstractController
      *      name="client.order.offers",
      *      methods={"GET"}
      *     )
-     * @param OrderOffersCollectionDataProvider $provider
-     * @return array|int|iterable|mixed[]|string
-     * @throws ResourceClassNotSupportedException
      */
-    public function getOffers(OrderOffersCollectionDataProvider $provider)
+    public function getOffers(int $orderId)
     {
-        return $this->json($provider->getCollection(Offer::class, 'getOrderOffers'));
+        return $this->json($this->entityManager->getRepository(Offer::class)->findBy(['order.id' => $orderId]));
     }
 
     /**
@@ -195,6 +185,7 @@ class OrdersController extends AbstractController
          $order->setPrice($offer->getPrice());
         $order->setStatus(Order::STATUS_PROCESSING);
         $order->setDriver($offer->getDriver());
+        // Create conversation between driver and client if not exists
         $repo = $this->entityManager->getRepository(Conversation::class);
         $conv = $repo->findConversationByUsers($this->security->getUser(), $offer->getDriver());
         if ($conv == null) {
@@ -227,18 +218,11 @@ class OrdersController extends AbstractController
         /**
          * @var OrderRepository $repo
          */
-        $status = $request->query->getInt("status");
-        $page = $request->query->getInt("page") ?? 1;
-        $repo = $this->getDoctrine()->getRepository(Order::class);
-        $dbOrders = $repo->getDriverOrders($user, $page, $status);
-        $orders = [];
-        foreach ($dbOrders as $dbOrder) {
-            $order = $this->serializer->deserialize($this->serializer->serialize($dbOrder[0], 'json'), OrderResponse::class, 'json');
-            $order->conversation = $dbOrder['conversation_id'];
-            $order->drop_place = $dbOrder[0]['dropPlace'];
-            array_push($orders, $order);
-        }
-        return new JsonResponse($orders, 200, [], false);
+        $status = $request->query->getInt("status", Order::STATUS_PROCESSING);
+        $page = $request->query->getInt("page", 1);
+        $dbOrders = $this->orderRepository->getDriverOrders($user, $page, $status);
+        $orders = $this->orderTransformer->transform($dbOrders);
+        return new JsonResponse($this->serializer->serialize($orders, 'json'), 200, [], false);
     }
 
     /**
@@ -301,28 +285,28 @@ class OrdersController extends AbstractController
         return
             new JsonResponse(['success' => true, 'message' => $this->translator->trans('success')]);
     }
-    /**
-     * @Route(
-     *     path="/api/orders/{id}/retrieve",
-     *      name="retrieve.order",
-     *      methods={"GET"}
-     *     )
-     * @param int $id
-     * @return JsonResponse
-     * @throws ResourceClassNotSupportedException
-     */
-    public function retrieveOrder(int $id)
-    {
-        $user = $this->security->getUser();
-        if (null === $user || !in_array('ROLE_DRIVER', $user->getRoles())) {
-            return new JsonResponse([], 401);
-        }
-        $order = $this->entityManager->getRepository(Order::class)->find($id);
-        if ($order == null) {
-            return new JsonResponse(['error' => $this->translator->trans('not_found', [], 'api')], 404);
-        }
-
-        $order = $this->serializer->deserialize($this->serializer->serialize($order, 'json'), OrderResponse::class, 'json');
-        return new JsonResponse($order, 200, [], false);
-    }
+//    /**
+//     * @Route(
+//     *     path="/api/orders/{id}",
+//     *      name="retrieve.order",
+//     *      methods={"GET"}
+//     *     )
+//     * @param int $id
+//     * @return JsonResponse
+//     * @throws ResourceClassNotSupportedException
+//     */
+//    public function retrieveOrder(int $id)
+//    {
+//        $user = $this->security->getUser();
+//        if (null === $user || !in_array('ROLE_DRIVER', $user->getRoles())) {
+//            return new JsonResponse([], 401);
+//        }
+//        $order = $this->entityManager->getRepository(Order::class)->find($id);
+//        if ($order == null) {
+//            return new JsonResponse(['error' => $this->translator->trans('not_found', [], 'api')], 404);
+//        }
+//
+//        $order = $this->serializer->deserialize($this->serializer->serialize($order, 'json'), OrderResponse::class, 'json');
+//        return new JsonResponse($order, 200, [], false);
+//    }
 }

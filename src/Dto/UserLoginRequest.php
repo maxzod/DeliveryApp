@@ -12,7 +12,7 @@ class UserLoginRequest implements IRequestDTO
     public function __construct(Request $request)
     {
         $data = json_decode($request->getContent(), true);
-        $this->phone = $data['$this->phone'];
+        $this->phone = $data['phone'];
     }
     /**
      * @Assert\NotBlank(allowNull=false)

@@ -1,0 +1,3 @@
+App\Entity\MediaObject:
+  image_media:
+    filePath: '/uploads/img.jpg'

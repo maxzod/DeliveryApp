@@ -1,0 +1,33 @@
+App\Entity\User:
+  client:
+    name: <name()>
+    email: client@example.com
+    gender: male
+    account_status: 1
+    password: "12132131"
+    roles:
+      - 'ROLE_CLIENT'
+    longitude: <longitude()>
+    latitude: <latitude()>
+    phone: <phoneNumber()>
+    stcpay: <phoneNumber()>
+    image: "@image_media"
+  driver:
+    name: <name()>
+    email: driver@example.com
+    gender: male
+    account_status: 1
+    password: "12132131"
+    roles:
+      - 'ROLE_DRIVER'
+    longitude: <longitude()>
+    latitude: <latitude()>
+    phone: <phoneNumber()>
+    stcpay: <phoneNumber()>
+    image: "@image_media"
+    form_img: "@image_media"
+    front_img: "@image_media"
+    back_img: "@image_media"
+    license_img: "@image_media"
+    id_card_img: "@image_media"
+    id_number: '123131131'

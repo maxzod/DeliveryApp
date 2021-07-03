@@ -48,7 +48,7 @@ use App\Dto\OrderBillResponse;
     ],
     itemOperations: [
     "get"=> [
-            "security"=>"is_granted('ROLE_DRIVER') or object.getOwner() == user",
+            "security"=> "is_granted('ROLE_DRIVER') or object.getOwner() == user",
             "output"=>OrderResponse::class
         ],
     "getOrderOffers"=>[
@@ -79,11 +79,6 @@ use App\Dto\OrderBillResponse;
             "method"=>"GET",
             "route_name"=>"client.order.take",
             "security"=>"object.getOwner() == user"
-        ],
-    "retrieveOrder"=>[
-           "method"=>"GET",
-           "route_name"=>"retrieve.order",
-           "path"=>"/orders/{id}/retrieve",
         ],
     "reviewOrder"=>[
             "route_name"=>"order.review",
@@ -218,6 +213,7 @@ class Order
         if($coupon){
             $order->setCoupon($coupon);
         }
+        $order->setStatus(Order::STATUS_WAITING);
         return $order;
     }
     public function getId(): ?int

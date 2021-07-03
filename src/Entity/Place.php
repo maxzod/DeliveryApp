@@ -32,7 +32,7 @@ abstract class Place
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $longtude;
+    private $longitude;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -64,14 +64,14 @@ abstract class Place
         return $this;
     }
 
-    public function getLongtude(): ?string
+    public function getLongitude(): ?string
     {
-        return $this->longtude;
+        return $this->longitude;
     }
 
-    public function setLongtude(string $longtude): self
+    public function setLongitude(string $longitude): self
     {
-        $this->longtude = $longtude;
+        $this->longitude = $longitude;
 
         return $this;
     }

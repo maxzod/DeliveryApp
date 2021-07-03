@@ -13,14 +13,7 @@ use App\Dto\ProductResponse;
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
  */
-#[ApiResource(
-    collectionOperations: [],
-    itemOperations: [
-        "get"=>["security"=>["is_granted('ROLE_DRIVER') or object.owner == user"]]
-    ],
-    input: ProductRequest::class,
-    output: ProductResponse::class
-)]
+#[ApiResource(collectionOperations: [],itemOperations: ["get"])]
 class Product
 {
     /**

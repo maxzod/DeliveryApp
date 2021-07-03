@@ -6,10 +6,11 @@ namespace App\Dto;
 
 class OrderResponse
 {
-    public int $id;
+    public ?int $id;
     public $price;
-    public int $status;
-    public string $note;
+    public ?int $status;
+    public ?string $note;
+    public ?string $createdAt;
     /**
      * @var UserResponse $owner
      */
@@ -18,7 +19,6 @@ class OrderResponse
      * @var UserResponse $driver
      */
     public $driver;
-    public string $createdAt;
     /**
      * @var ProductResponse[]
      */
@@ -39,5 +39,5 @@ class OrderResponse
      * @var CouponResponse $coupon
      */
     public $coupon;
-    public int $conversation;
+    public ?int $conversation;
 }

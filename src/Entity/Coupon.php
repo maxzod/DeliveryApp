@@ -114,26 +114,14 @@ class Coupon
         return $this;
     }
 
-    public function getHasFixedNumber(): ?bool
+    public function getIsFixedNumber(): ?bool
     {
-        return $this->hasFixedNumber;
+        return $this->isFixedNumber;
     }
 
-    public function setHasFixedNumber(bool $hasFixedNumber): self
+    public function setIsFixedNumber(bool $isFixedNumber): self
     {
-        $this->hasFixedNumber = $hasFixedNumber;
-
-        return $this;
-    }
-
-    public function getFixedNumber(): ?int
-    {
-        return $this->fixedNumber;
-    }
-
-    public function setFixedNumber(?int $fixedNumber): self
-    {
-        $this->fixedNumber = $fixedNumber;
+        $this->isFixedNumber = $isFixedNumber;
 
         return $this;
     }
