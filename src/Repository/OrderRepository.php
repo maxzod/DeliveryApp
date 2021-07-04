@@ -7,6 +7,7 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
+use function Doctrine\ORM\QueryBuilder;
 
 /**
  * @method Order|null find($id, $lockMode = null, $lockVersion = null)
@@ -66,16 +67,25 @@ class OrderRepository extends ServiceEntityRepository
 
     public function getAvailableOrders(?int $page = 1)
     {
-        return $this->createQueryBuilder('o')
+        $qb = $this->createQueryBuilder('o');
+        return $qb
             ->where("o.status = :status")
-            ->andWhere("COUNT(o.offers) < 6")
+            ->having(
+                $qb->expr()->lt(
+                    $qb->expr()->count("offers"),
+                    ":count"
+                )
+            )
             ->leftJoin("o.owner", "owner")
             ->leftJoin("owner.image", "image")
             ->leftJoin("o.products", "products")
             ->leftJoin("o.place", "place")
             ->leftJoin("o.dropPlace", "drop_place")
             ->leftJoin('o.conversation', 'conversation')
+            ->leftJoin('o.offers', 'offers')
+            ->groupBy('o.id')
             ->setParameter("status", Order::STATUS_WAITING)
+            ->setParameter("count", 6)
             ->setFirstResult(($page - 1) * 15)
             ->setMaxResults($page * 15)
             ->getQuery()

@@ -150,6 +150,7 @@ class Order
 
     /**
      * @ORM\OneToOne(targetEntity=OrderPlace::class, inversedBy="theOrder", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="place_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $place;
 
@@ -160,6 +161,7 @@ class Order
 
     /**
      * @ORM\OneToOne(targetEntity=DropPlace::class, inversedBy="theOrder", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="drop_place_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $dropPlace;
 

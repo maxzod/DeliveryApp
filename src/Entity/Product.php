@@ -44,6 +44,7 @@ class Product
 
     /**
      * @ORM\ManyToOne(targetEntity=Order::class, inversedBy="products", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="the_order_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $theOrder;
 

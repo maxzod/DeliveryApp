@@ -78,7 +78,7 @@ class OrdersController extends AbstractController
 
     /**
      * @Route(name="orders.index", path="/api/orders", methods={"GET"})
-     * @SSecurity("(is_granted('ROLE_CLIENT') or is_granted('ROLE_CLIENT')) and user.getAccountStatus() == 1")
+     * @SSecurity("(is_granted('ROLE_CLIENT') or is_granted('ROLE_DRIVER')) and user.getAccountStatus() == 1")
      */
     public function index(Request $request)
     {
@@ -93,7 +93,7 @@ class OrdersController extends AbstractController
             $orders = $this->orderRepository->getAvailableOrders($request->query->getInt('page', 1));
         }
         $data = $this->orderTransformer->transform($orders);
-        return new JsonResponse($this->serializer->serialize($data, 'json'), 200, [], false);
+        return new JsonResponse($this->serializer->serialize($data, 'json'), 200,json: true);
     }
     /**
      * @Route(name="orders.store", path="/api/orders",methods={"POST"})

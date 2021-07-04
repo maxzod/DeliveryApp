@@ -4,6 +4,7 @@ namespace App\Tests;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
+use App\Entity\Order;
 use App\Tests\Helpers\UserTokenTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Hautelook\AliceBundle\PhpUnit\ReloadDatabaseTrait;
@@ -29,7 +30,30 @@ class OrderTest extends ApiTestCase
                 'Content-Type' => 'application/json'
             ]
         ]);
-        var_dump($response->getContent());
         $this->assertResponseIsSuccessful();
+        $this->assertJsonContains([
+            [
+                'owner' => [
+                    'email' => 'client@example.com'
+                ]
+            ]
+        ]);
+    }
+    public function testDriverCanGetAvailableOrders(): void
+    {
+        $token = $this->getDriverToken($this->getContainer()->get(EntityManagerInterface::class));
+        $response = $this->client->request('GET', '/api/orders', [
+            'headers' => [
+                'Authorization' => 'Bearer '.$token,
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json'
+            ]
+        ]);
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonContains([
+            [
+                'status' => Order::STATUS_WAITING
+            ]
+        ]);
     }
 }
