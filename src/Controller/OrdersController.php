@@ -102,7 +102,7 @@ class OrdersController extends AbstractController
     public function store(OrderRequest $request)
     {
         $coupon = null;
-        if(isset($request->coupon))
+        if(isset($request->coupon) && $request->coupon != "")
         {
             $coupon = $this->entityManager->getRepository(Coupon::class)->findOneBy(['code' => $request->coupon]);
             if($coupon == null)

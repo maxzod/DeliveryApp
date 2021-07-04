@@ -22,5 +22,5 @@ class ProductRequest
      * @Assert\NotBlank(allowNull=true)
      * @Assert\Range(min="1")
      */
-    public int $image;
+    public ?int $image;
 }

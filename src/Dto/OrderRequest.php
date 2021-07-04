@@ -24,13 +24,15 @@ class OrderRequest implements IRequestDTO
         $this->drop_place->address = $data['drop_place']['address'];
         $this->drop_place->longitude = $data['drop_place']['longitude'];
         $this->drop_place->latitude = $data['drop_place']['latitude'];
+        $products = [];
         foreach ($data['products'] as $product){
             $prd = new ProductRequest();
             $prd->name = $product['name'];
-            $prd->image = $product['image'];
+            $prd->image = $product['image'] ?? null;
             $prd->quantity = $product['quantity'];
-            array_push($this->products, $prd);
+            array_push($products, $prd);
         }
+        $this->products = $products;
     }
     public string $note;
     /**
@@ -47,7 +49,7 @@ class OrderRequest implements IRequestDTO
      * @var ProductRequest[] $products
      * @Assert\Valid()
      */
-    public $products;
+    public array $products;
 
     public $coupon;
 }

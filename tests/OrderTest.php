@@ -56,4 +56,75 @@ class OrderTest extends ApiTestCase
             ]
         ]);
     }
+    public function testClientCanCreateOrders(): void
+    {
+        $token = $this->getClientToken($this->getContainer()->get(EntityManagerInterface::class));
+        $response = $this->client->request('POST', '/api/orders', [
+            'headers' => [
+                'Authorization' => 'Bearer '.$token,
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json'
+            ],
+            'json' =>
+                [
+                  "note"=> "nothing",
+                  "place"=> [
+                    "name"=> "string",
+                    "longitude"=> "string",
+                    "latitude"=> "string",
+                    "address" => "string"
+                  ],
+                  "drop_place" => [
+                    "name"=> "string",
+                    "longitude"=> "string",
+                    "latitude"=> "string",
+                    "address"=> "string"
+                  ],
+                  "products" => [
+                    [
+                     "name" => "string",
+                      "quantity"=> 10,
+                    ]
+                  ],
+                  "coupon"=> ""
+                ]
+        ]);
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseStatusCodeSame(204);
+    }
+    public function testDriverCantCreateOrders(): void
+    {
+        $token = $this->getDriverToken($this->getContainer()->get(EntityManagerInterface::class));
+        $response = $this->client->request('POST', '/api/orders', [
+            'headers' => [
+                'Authorization' => 'Bearer '.$token,
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json'
+            ],
+            'json' =>
+                [
+                    "note"=> "nothing",
+                    "place"=> [
+                        "name"=> "string",
+                        "longitude"=> "string",
+                        "latitude"=> "string",
+                        "address" => "string"
+                    ],
+                    "drop_place" => [
+                        "name"=> "string",
+                        "longitude"=> "string",
+                        "latitude"=> "string",
+                        "address"=> "string"
+                    ],
+                    "products" => [
+                        [
+                            "name" => "string",
+                            "quantity"=> 10,
+                        ]
+                    ],
+                    "coupon"=> ""
+                ]
+        ]);
+        $this->assertResponseStatusCodeSame(403);
+    }
 }

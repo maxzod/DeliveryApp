@@ -21,6 +21,7 @@ security:
             stateless: true
             anonymous: true
             provider: app_user_provider
+            access_denied_handler: App\Security\AccessDeniedHandler
             json_login:
                 check_path: /api/token
                 username_path: email
