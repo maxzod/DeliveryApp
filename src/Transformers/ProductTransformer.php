@@ -46,7 +46,7 @@ class ProductTransformer implements \Symfony\Component\Form\DataTransformerInter
         $response->quantity = $product->getQuantity();
         $response->image = new ImageResponse();
         $response->image->id = $product->getImage()?->getId();
-        $response->image->path = $product->getImage()?->filePath;
+        $response->image->path = $product->getImage()?->getFilePath();
         return $response;
     }
 }

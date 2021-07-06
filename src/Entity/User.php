@@ -26,7 +26,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ApiResource(
     collectionOperations: [],
-    itemOperations: ["get"],
+    itemOperations: ["get",
+        "reviews" => [
+            "method" => "GET",
+            "route" => "api.user.reviews",
+            "output" => ReviewResponse::class
+        ]],
     normalizationContext: [
         "groups" => ["user:read"]
     ]

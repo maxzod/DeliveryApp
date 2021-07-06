@@ -44,7 +44,7 @@ class OrderBillTransformer implements \Symfony\Component\Form\DataTransformerInt
         $response->price = $value->getPrice();
         $response->image = new ImageResponse();
         $response->image->id = $value->getImage()?->getId();
-        $response->image->path = $value->getImage()?->filePath;
+        $response->image->path = $value->getImage()?->getFilePath();
         return $response;
     }
 }

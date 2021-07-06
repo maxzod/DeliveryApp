@@ -9,6 +9,8 @@ use App\DataProvider\UserReviewsCollectionDataProvider;
 use App\Dto\ReviewRequest;
 use App\Entity\Order;
 use App\Entity\Review;
+use App\Repository\ReviewRepository;
+use App\Transformers\ReviewTransformer;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Comparison;
@@ -19,6 +21,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ReviewsController extends AbstractController
@@ -31,15 +34,22 @@ class ReviewsController extends AbstractController
      * @var Security
      */
     private Security $security;
-    private ValidatorInterface $validator;
     private TranslatorInterface $translator;
+    private ReviewTransformer $reviewTransformer;
+    private ReviewRepository $repository;
+    private SerializerInterface $serializer;
 
-    public function __construct(EntityManagerInterface $entityManager, Security $security, ValidatorInterface $validator, TranslatorInterface $translator)
+    public function __construct(EntityManagerInterface $entityManager,
+                                Security $security, TranslatorInterface $translator,
+                                ReviewTransformer $reviewTransformer, ReviewRepository $repository,
+                                SerializerInterface $serializer)
     {
         $this->entityManager = $entityManager;
         $this->security = $security;
-        $this->validator = $validator;
         $this->translator = $translator;
+        $this->reviewTransformer = $reviewTransformer;
+        $this->repository = $repository;
+        $this->serializer = $serializer;
     }
     /**
      * @param int $id
@@ -80,15 +90,14 @@ class ReviewsController extends AbstractController
         return  new JsonResponse(['status' => $this->translator->trans('success', [], 'api')], 201);
     }
 
-//    /**
-//     * @Route(name="api.user.reviews", methods={"GET"}, path="/api/users/{id}/reviews"
-//     * ,defaults={
-//     *     "_api_resource_class"= Review::class,
-//     *     "_api_collection_operation_name"= "getUserReviews"
-//     *     }))
-//     */
-//    public function getUserReviews(int $id, UserReviewsCollectionDataProvider $provider){
-//        return $provider->getCollection(Review::class, 'getUserReviews');
-//    }
+    /**
+     * @Route(name="api.user.reviews", methods={"GET"}, path="/api/users/{id}/reviews")
+     */
+    public function getUserReviews(int $id)
+    {
+        $reviews = $this->repository->getUserReviews($id);
+        $response = $this->reviewTransformer->transform($reviews);
+        return new JsonResponse($this->serializer->serialize($response, 'json'), 200,json: true);
+    }
 
 }

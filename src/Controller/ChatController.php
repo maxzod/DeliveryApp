@@ -130,7 +130,7 @@ class ChatController extends AbstractController
             if($img == null){
                 return new JsonResponse(['error' => $this->translator->trans('image_not_found', [], 'api')], 404);
             }
-            $message->setContent($img->filePath);
+            $message->setContent($img->getFilePath());
             $message->setType($request->type);
         }
         else {

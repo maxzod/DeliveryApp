@@ -13,7 +13,7 @@ use App\Dto\ReviewResponse;
  * @ORM\Entity(repositoryClass=ReviewRepository::class)
  */
 #[ApiResource(
-    collectionOperations:["get"],
+    collectionOperations:[],
     itemOperations:["get"],
     input:ReviewRequest::class,
     output:ReviewResponse::class
@@ -34,7 +34,6 @@ class Review
     private $reviewer;
 
     /**
-     * @ApiSubresource(maxDepth=1)
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="reviews")
      * @ORM\JoinColumn(nullable=false)
      */
