@@ -7,9 +7,22 @@ App\Entity\Order:
     products:
       - "@product_data"
     status: 1
+  order_proc:
+    note: <sentence()>
+    owner: "@client"
+    place: "@place_data2"
+    drop_place: "@dplace_data2"
+    products:
+      - "@product_data2"
+    status: 2
 
 App\Entity\OrderPlace:
   place_data:
+    name: <word()>
+    address: <sentence()>
+    longitude: <longitude()>
+    latitude: <latitude()>
+  place_data2:
     name: <word()>
     address: <sentence()>
     longitude: <longitude()>
@@ -21,8 +34,16 @@ App\Entity\DropPlace:
     address: <sentence()>
     longitude: <longitude()>
     latitude: <latitude()>
+  dplace_data2:
+    name: <word()>
+    address: <sentence()>
+    longitude: <longitude()>
+    latitude: <latitude()>
 
 App\Entity\Product:
   product_data:
+    name: <word()>
+    quantity: <numberBetween(1,10)>
+  product_data2:
     name: <word()>
     quantity: <numberBetween(1,10)>

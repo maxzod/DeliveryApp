@@ -5,6 +5,7 @@ namespace App\EventSubscribers;
 
 
 use App\Entity\Offer;
+use App\Messages\Notification;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;

@@ -66,7 +66,7 @@ class DriverMakeOfferController extends AbstractController
          * @var Order $order
          */
         $order = $this->entityManager->getRepository(Order::class)->findOneBy(['id' => $id]);
-        [$valid, $err] = $this->isOrderOfferable($order, $user);
+        list($valid, $err) = $this->isOrderOfferable($order, $user);
         if(!$valid) {
             return $err;
         }
@@ -95,7 +95,7 @@ class DriverMakeOfferController extends AbstractController
             $errResponse = new JsonResponse(['error' => $this->translator->trans('access_denied', [], 'api')], 403);
         }
 
-        if ($order->getStatus() == Order::STATUS_PROCESSING) {
+        if ($order->getStatus() != Order::STATUS_WAITING) {
             $errResponse = new JsonResponse(['error' => $this->translator->trans('order_in_process_err', [], 'api')], 422);
         }
         if ($order->getOffers()->count() == 6) {
@@ -107,6 +107,11 @@ class DriverMakeOfferController extends AbstractController
         if (count($offs) > 0) {
             $errResponse = new JsonResponse(['error' => $this->translator->trans('access_denied', [], 'api')], 422);
         }
-        return $errResponse == null ? [false, $errResponse] : [true, null];
+        if($errResponse == null){
+            return [true, null];
+        }else{
+            return [false, $errResponse];
+        }
+
     }
 }

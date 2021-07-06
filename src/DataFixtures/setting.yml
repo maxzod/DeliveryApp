@@ -1,0 +1,5 @@
+App\Entity\Setting:
+  setting:
+    name: <word()>
+    logo: "@image_media"
+    commission: 10

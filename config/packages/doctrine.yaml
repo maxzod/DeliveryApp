@@ -24,4 +24,3 @@ doctrine:
                 DAY: DoctrineExtensions\Query\Postgresql\Day
                 DATE_FORMAT: DoctrineExtensions\Query\Postgresql\DateFormat
                 ROUND: DoctrineExtensions\Query\Postgresql\Round
-                JSON_GET_TEXT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Postgresql\JsonGetText
