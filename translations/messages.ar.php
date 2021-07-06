@@ -13,8 +13,10 @@ return [
     'Category' => 'تصنيف',
     'Dashboard' => 'لوحة تحكم',
     'Categories' => 'تصنيفات',
-    'Name Ar' => 'الاسم بالعربية',
-    'Name En' => 'الاسم بالانجليزية',
+    'Name ar' => 'الاسم بالعربية',
+    'Name en' => 'الاسم بالانجليزية',
+    'Name_ar' => 'الاسم بالعربية',
+    'Name_en' => 'الاسم بالانجليزية',
     'Position' => 'الترتيب',
     'Complaints' => 'الشكاوي',
     'Title' => 'العنوان',
@@ -29,8 +31,9 @@ return [
     'Coupons' => 'كوبونات',
     'Code' => 'كود',
     'Value' => ' % القيمة',
-    'Expire At' => 'ينتهي في',
-    'Has Fixed Number' => 'كوبون بقيمة ثابتة',
+    'Expire at' => 'ينتهي في',
+    'Is a Fixed Number' => 'كوبون بقيمة ثابتة؟',
+    'Is fixed number' => 'كوبون بقيمة ثابتة؟',
     'Fixed Number' => 'القيمة الثابتة',
     'yes' => 'نعم',
     'no' => 'لا',
@@ -87,5 +90,7 @@ return [
     'Orders Count' => 'عدد الطلبات',
     'Gender' => 'الجنس',
     'Permissions' => 'الصلاحيات',
-    'Moderators' => 'المشرفين'
+    'Moderators' => 'المشرفين',
+    'Edit' => 'تعديل',
+    'Delete' => 'حذف'
 ];

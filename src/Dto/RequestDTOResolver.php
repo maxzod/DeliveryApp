@@ -25,6 +25,9 @@ class RequestDTOResolver implements ArgumentValueResolverInterface
      */
     public function supports(Request $request, ArgumentMetadata $argument): bool
     {
+        if(!class_exists($argument->getType())){
+            return false;
+        }
         $reflection = new \ReflectionClass($argument->getType());
         if ($reflection->implementsInterface(IRequestDTO::class)) {
             return true;

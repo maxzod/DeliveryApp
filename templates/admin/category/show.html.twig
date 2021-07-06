@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Category{% endblock %}
+
+{% block body %}
+    <h1>Category</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>{% trans %}ID{% endtrans %}</th>
+                <td>{{ category.id }}</td>
+            </tr>
+            <tr>
+                <th>{% trans %}Name_ar{% endtrans %}</th>
+                <td>{{ category.nameAr }}</td>
+            </tr>
+            <tr>
+                <th>{% trans %}Name_en{% endtrans %}</th>
+                <td>{{ category.nameEn }}</td>
+            </tr>
+            <tr>
+                <th>Cat_type</th>
+                <td>{{ category.catType }}</td>
+            </tr>
+            <tr>
+                <th>{% trans %}Position{% endtrans %}</th>
+                <td>{{ category.position }}</td>
+            </tr>
+            <tr>
+                <th>{% trans %}Image{% endtrans %}</th>
+                <td><img src="/uploads/{{ category.image.filePath }}" alt=""></td>
+            </tr>
+            <tr>
+                <th>{% trans %}Created At{% endtrans %}</th>
+                <td>{{ category.createdAt ? category.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('category_index') }}">back to list</a>
+
+    <a href="{{ path('category_edit', {'id': category.id}) }}" class="btn btn-warning">edit</a>
+
+    {{ include('admin/category/_delete_form.html.twig') }}
+{% endblock %}

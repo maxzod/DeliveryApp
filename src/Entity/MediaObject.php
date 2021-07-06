@@ -79,8 +79,22 @@ class MediaObject
      *
      * @ORM\Column(nullable=true)
      */
-    public $filePath;
+    private $filePath;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+    public function __construct()
+    {
+        $this->setCreatedAt(new \DateTime());
+    }
     /**
      * @return int|null
      * @Groups({"media_object_read"})
@@ -90,6 +104,23 @@ class MediaObject
         return $this->id;
     }
 
+    /**
+     * @return File|null
+     */
+    public function getFile(): ?File
+    {
+        return $this->file;
+    }
+
+    /**
+     * @param File|null $file
+     */
+    public function setFile(?File $file): self
+    {
+        $this->file = $file;
+        $this->setUpdatedAt(new \DateTime());
+        return $this;
+    }
     public function getFilePath(): ?string
     {
         return $this->filePath;
@@ -98,6 +129,29 @@ class MediaObject
     public function setFilePath(?string $filePath): self
     {
         $this->filePath = $filePath;
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

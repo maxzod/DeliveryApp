@@ -36,11 +36,12 @@ class Setting
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotBlank(allowNull=false)
-     * @Assert\Length(min=3)
+     * @var MediaObject|null
+     *
+     * @ORM\ManyToOne(targetEntity=MediaObject::class, cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      */
-    private $logo;
+    public $logo;
 
     /**
      * @ORM\Column(type="integer")
@@ -53,6 +54,21 @@ class Setting
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $terms_conditions;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+    public function __construct()
+    {
+        $this->setCreatedAt(new \DateTime());
+    }
 
     public function getId(): ?int
     {
@@ -71,12 +87,12 @@ class Setting
         return $this;
     }
 
-    public function getLogo(): ?string
+    public function getLogo(): ?MediaObject
     {
         return $this->logo;
     }
 
-    public function setLogo(string $logo): self
+    public function setLogo(MediaObject $logo): self
     {
         $this->logo = $logo;
 
@@ -103,6 +119,29 @@ class Setting
     public function setTermsConditions(string $terms_conditions): self
     {
         $this->terms_conditions = $terms_conditions;
+
+        return $this;
+    }
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

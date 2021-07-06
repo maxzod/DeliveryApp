@@ -56,11 +56,12 @@ class Category
     private $position;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(allowNull=false)
-     * @Assert\Length(min=3)
+     * @var MediaObject|null
+     *
+     * @ORM\ManyToOne(targetEntity=MediaObject::class, cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      */
-    private $image;
+    public $image;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)

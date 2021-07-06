@@ -24,11 +24,12 @@ class Slider
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(allowNull=false)
-     * @Assert\Length(min=3)
+     * @var MediaObject|null
+     *
+     * @ORM\ManyToOne(targetEntity=MediaObject::class, cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      */
-    private $image;
+    public $image;
 
     /**
      * @ORM\Column(type="integer")
@@ -42,12 +43,12 @@ class Slider
         return $this->id;
     }
 
-    public function getImage(): ?string
+    public function getImage(): ?MediaObject
     {
         return $this->image;
     }
 
-    public function setImage(string $image): self
+    public function setImage(MediaObject $image): self
     {
         $this->image = $image;
 

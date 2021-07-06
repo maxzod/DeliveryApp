@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Setting{% endblock %}
+
+{% block body %}
+    <h1>Setting</h1>
+    <a href="{{ path('admin_setting_edit') }}">Update</a>
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Name</th>
+                <td>{{ setting.name }}</td>
+            </tr>
+            <tr>
+                <th>Logo</th>
+                {% if setting.logo != null %}
+                    <td><img src="/uploads/{{ setting.logo.getFilePath() }}" alt=""></td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+            </tr>
+            <tr>
+                <th>Commission</th>
+                <td>{{ setting.commission }}</td>
+            </tr>
+            <tr>
+                <th>Terms_conditions</th>
+                <td>{{ setting.termsConditions }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}
