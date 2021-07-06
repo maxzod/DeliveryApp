@@ -15,6 +15,7 @@ use App\Dto\ComplaintsResponse;
 #[ApiResource(
     collectionOperations: [
         "get" => [
+            "route" => "user.complaints",
             "output" => ComplaintsResponse::class
         ],
         "post" => [

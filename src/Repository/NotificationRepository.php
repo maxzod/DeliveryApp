@@ -23,6 +23,7 @@ class NotificationRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('n')
                     ->where("n.owner = :user")
+                    ->setParameter('user', $userId)
                     ->getQuery()
                     ->getResult();
     }

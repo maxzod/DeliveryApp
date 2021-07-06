@@ -19,6 +19,14 @@ class ComplaintsRepository extends ServiceEntityRepository
         parent::__construct($registry, Complaints::class);
     }
 
+    public function getUserComplaints(int $userId)
+    {
+        return $this->createQueryBuilder('o')
+                    ->where('o.owner = :user')
+                    ->setParameter('user', $userId)
+                    ->getQuery()
+                    ->getResult();
+    }
     // /**
     //  * @return Complaints[] Returns an array of Complaints objects
     //  */
