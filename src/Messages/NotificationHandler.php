@@ -43,7 +43,7 @@ class NotificationHandler implements MessageHandlerInterface
         $this->entityManager->persist($noti);
         $this->entityManager->flush();
 
-        $API_ACCESS_KEY = "AAAANxkZC9Q:APA91bGZbPxVtIANrLR9Jm-FezIvpFkzcHr9BUtSV5AFoJPXYzU5cFJxBOCFZE_zjJ0CvnIqy827hOnbBqLbSiTTm9dLMPf-x3JrVqA-9J44KZpwI4ja66ToRtAyMcW8C37npY-6FcNs";
+        $API_ACCESS_KEY = "";
         $url = 'https://fcm.googleapis.com/fcm/send';
         $msg = [
             'body'=> $notification->getContent(),
